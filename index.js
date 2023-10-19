@@ -36,7 +36,7 @@ async function run() {
         const productCollection = client.db('productDB').collection('product');
 
         // add product
-        app.post('/product', async(req, res) =>{
+        app.post('/product', async (req, res) => {
             const newProduct = req.body;
             console.log(newProduct);
             const result = await productCollection.insertOne(newProduct);
@@ -45,20 +45,45 @@ async function run() {
         })
 
         // show all product
-        app.get('/product', async(req, res) =>{
+        app.get('/product', async (req, res) => {
             const cursor = productCollection.find();
             const result = await cursor.toArray();
             res.send(result);
-        } )
+        })
 
-        // update a product
-        app.get('/products/:id', async(req, res) =>{
+        // find a product
+        app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             // console.log(query);
             const result = await productCollection.findOne(query);
             res.send(result);
         })
+
+        // update the product
+        app.put('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedProduct = req.body;
+            const product = {
+                $set: {
+                    photo: updatedProduct.photo,
+                    name: updatedProduct.name,
+                    brand: updatedProduct.brand,
+                    type: updatedProduct.type,
+                    price: updatedProduct.price,
+                    descrip: updatedProduct.descrip,
+                    rating: updatedProduct.rating
+
+                }
+            }
+
+            const result = await productCollection.updateOne(filter, product, options);
+            res.send(result);
+
+        })
+
 
 
 
