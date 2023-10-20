@@ -31,7 +31,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const productCollection = client.db('productDB').collection('product');
 
@@ -113,8 +113,16 @@ async function run() {
 
         })
 
-
-
+        // ------------------this part is very very important-------------
+        // if i click on samsung it will show me just samsung brand products
+        // home brand 
+        app.get('/product/:brand', async (req, res) => {
+            const brand = req.params.brand;
+            const query = { brand: brand };
+            const result = await productCollection.find(query).toArray();
+            res.send(result);
+        })
+        // ---------------------------------------------------------------
 
 
 
