@@ -84,6 +84,28 @@ async function run() {
 
         })
 
+        // cart start
+        const cartCollection = client.db('cartDB').collection('cart')
+
+        // add to cart 
+        app.post('/cart', async(req, res) =>{
+            const newCart = req.body;
+            console.log(newCart);
+
+            const result = await cartCollection.insertOne(newCart);
+            res.send(result);
+        })
+
+
+        // show the added product to the cart page
+        app.get('/cart', async(req, res) =>{
+            const cursor = cartCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+
+
+        })
+
 
 
 
